@@ -8,11 +8,10 @@ func main() {
 	log.SetLevel(log.DebugLevel)
 
 	// event channel
-	channel := make(chan Event)
+	channel := make(chan TemplaterEvent)
 
-	go initGUI(channel)
 	go listenToChannel(channel)
+	go initSystemtray(channel)
 
-	// creation of the systray => blocks the runtime
-	initSystemtray(channel)
+	initGUI(channel)
 }

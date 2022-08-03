@@ -7,7 +7,7 @@ import (
 	"github.com/skratchdot/open-golang/open"
 )
 
-func initSystemtray(channel chan Event) {
+func initSystemtray(channel chan TemplaterEvent) {
 	systray.Run(
 		func() {
 			log.Debug(">> START: initSystemtray() -> onReady()")
@@ -17,40 +17,63 @@ func initSystemtray(channel chan Event) {
 			systray.SetTooltip("Templater")
 			systray.SetTemplateIcon(icon.Data, icon.Data)
 
-			menuItemActive := systray.AddMenuItemCheckbox("Active", "Check Me", true)
+			menuItemStatus := systray.AddMenuItemCheckbox("Active", "Check Me", true)
+			menuItemSettings := systray.AddMenuItem("Settings", "Settings")
+
 			systray.AddSeparator()
+
 			menuItemGithub := systray.AddMenuItem("Homepage", "Visit homepage")
+
 			systray.AddSeparator()
+
 			menuItemQuit := systray.AddMenuItem("Quit", "Quit the whole app")
 
 			go func() {
 				for {
 					select {
-					case <-menuItemActive.ClickedCh:
-						log.Debug("menuItemActive.ClickedCh")
+					case <-menuItemStatus.ClickedCh:
+						log.Debug("menuItemStatus.ClickedCh")
 
-						if menuItemActive.Checked() {
-							menuItemActive.Uncheck()
-							channel <- KeyloggerDeactivate
+						event := CreateEvent()
+						event.Type = TemplaterStatus
+						event.ValueBool = !menuItemStatus.Checked()
+						channel <- event
+
+						if menuItemStatus.Checked() {
+							menuItemStatus.Uncheck()
 						} else {
-							menuItemActive.Check()
-							channel <- KeyloggerActivate
+							menuItemStatus.Check()
 						}
+
+					case <-menuItemSettings.ClickedCh:
+						log.Debug("menuItemSettings.ClickedCh")
+						event := CreateEvent()
+						event.Type = OpenSettings
+						channel <- event
+
 					case <-menuItemGithub.ClickedCh:
 						log.Debug("menuItemGithub.ClickedCh")
 
 						open.Run("https://github.com/matseee/templater")
+
 					case <-menuItemQuit.ClickedCh:
 						log.Debug("menuItemQuit.ClickedCh")
 
-						channel <- Quit
+						event := CreateEvent()
+						event.Type = Quit
+						channel <- event
+
 						systray.Quit()
 					}
 				}
 
 			}()
 
-			channel <- KeyloggerActivate
+			event := CreateEvent()
+			event.Type = TemplaterStatus
+			event.ValueBool = true
+
+			channel <- event
 		},
 		func() {
 			log.Debug(">> START: initSystemtray() -> onExit()")

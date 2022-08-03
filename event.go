@@ -1,9 +1,25 @@
 package main
 
-type Event int64
+type TemplaterEventStatus int64
 
 const (
-	KeyloggerActivate Event = iota
-	KeyloggerDeactivate
+	TemplaterStatus TemplaterEventStatus = iota
+	OpenSettings
 	Quit
 )
+
+type TemplaterEvent struct {
+	Type        TemplaterEventStatus
+	ValueBool   bool
+	ValueInt    int64
+	ValueString string
+}
+
+func CreateEvent() TemplaterEvent {
+	return TemplaterEvent{
+		Type:        TemplaterStatus,
+		ValueBool:   false,
+		ValueInt:    0,
+		ValueString: "",
+	}
+}

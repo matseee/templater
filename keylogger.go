@@ -5,20 +5,28 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func listenToChannel(channel chan Event) {
+func listenToChannel(channel chan TemplaterEvent) {
 	log.Debug(">> START: listenToChannel()")
 	defer log.Debug("<< END: listenToChannel()")
 
+	var active bool
 	var k *keylogger.KeyLogger
 
 	for event := range channel {
-		switch event {
-		case KeyloggerActivate:
-			k = createKeylogger()
-		case KeyloggerDeactivate:
-			k.Close()
+		switch event.Type {
+		case TemplaterStatus:
+			active = event.ValueBool
+
+			if event.ValueBool {
+				k = createKeylogger()
+			} else {
+				k.Close()
+			}
 		case Quit:
-			k.Close()
+			if active {
+				k.Close()
+			}
+			return
 		}
 	}
 }
