@@ -1,39 +1,39 @@
 package main
 
 import (
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/widget"
+	"math/rand"
+	"strconv"
+	"time"
+
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
-var application fyne.App
+var portMin, portMax int = 49152, 65535
+var port int
 
 func initGUI(channel chan TemplaterEvent) {
 	log.Debug(">> START: initGUI()")
 	defer log.Debug("<< END: initGUI()")
 
-	application = app.New()
-	application.Settings()
+	port = getRandomPort()
 
-	for {
-		for event := range channel {
-			log.Debug(event)
-			switch event.Type {
-			case OpenSettings:
-				createWindow()
-			case Quit:
-				return
-			}
-		}
+	for createRouter(port) != nil {
+		port = getRandomPort()
 	}
 }
 
-func createWindow() {
-	log.Debug(">> START: createWindow()")
-	defer log.Debug("<< END: createWindow()")
+func getRandomPort() int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(portMax-portMin) + portMin
+}
 
-	w := application.NewWindow("Hello World")
-	w.SetContent(widget.NewLabel("Hello World!"))
-	w.ShowAndRun()
+func getURL() string {
+	return "http://localhost:" + strconv.Itoa(port) + "/"
+}
+
+func createRouter(port int) error {
+	router := gin.Default()
+	router.Static("/", "./angular-app/dist/angular-app")
+	return router.Run(":" + strconv.Itoa(port))
 }

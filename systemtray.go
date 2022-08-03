@@ -47,13 +47,13 @@ func initSystemtray(channel chan TemplaterEvent) {
 
 					case <-menuItemSettings.ClickedCh:
 						log.Debug("menuItemSettings.ClickedCh")
-						event := CreateEvent()
-						event.Type = OpenSettings
-						channel <- event
+
+						if err := open.Run(getURL()); err != nil {
+							log.Error(err)
+						}
 
 					case <-menuItemGithub.ClickedCh:
 						log.Debug("menuItemGithub.ClickedCh")
-
 						open.Run("https://github.com/matseee/templater")
 
 					case <-menuItemQuit.ClickedCh:
