@@ -1,10 +1,12 @@
 package main
 
 import (
+	"os"
+	"os/exec"
+
 	"github.com/getlantern/systray"
 	"github.com/getlantern/systray/example/icon"
 	log "github.com/sirupsen/logrus"
-	"github.com/skratchdot/open-golang/open"
 )
 
 func initSystemtray(channel chan TemplaterEvent) {
@@ -48,13 +50,15 @@ func initSystemtray(channel chan TemplaterEvent) {
 					case <-menuItemSettings.ClickedCh:
 						log.Debug("menuItemSettings.ClickedCh")
 
-						if err := open.Run(getURL()); err != nil {
-							log.Error(err)
-						}
+						uid := "#" + os.Getenv("SUDO_UID")
+						url := getURL()
+						go exec.Command("sudo", "-u", uid, "xdg-open", url).Start()
 
 					case <-menuItemGithub.ClickedCh:
 						log.Debug("menuItemGithub.ClickedCh")
-						open.Run("https://github.com/matseee/templater")
+
+						uid := "#" + os.Getenv("SUDO_UID")
+						go exec.Command("sudo", "-u", uid, "xdg-open", "https://github.com/matseee/templater").Start()
 
 					case <-menuItemQuit.ClickedCh:
 						log.Debug("menuItemQuit.ClickedCh")
@@ -66,7 +70,6 @@ func initSystemtray(channel chan TemplaterEvent) {
 						systray.Quit()
 					}
 				}
-
 			}()
 
 			event := CreateEvent()
