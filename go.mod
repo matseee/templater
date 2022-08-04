@@ -40,6 +40,5 @@ require (
 
 require (
 	github.com/getlantern/systray v1.2.1
-	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	golang.org/x/sys v0.0.0-20220803195053-6e608f9ce704 // indirect
 )
