@@ -19,8 +19,8 @@ func initSystemtray(channel chan TemplaterEvent) {
 			systray.SetTooltip("Templater")
 			systray.SetTemplateIcon(icon.Data, icon.Data)
 
+			menuItemOpen := systray.AddMenuItem("Open", "Open")
 			menuItemStatus := systray.AddMenuItemCheckbox("Active", "Check Me", true)
-			menuItemSettings := systray.AddMenuItem("Settings", "Settings")
 
 			systray.AddSeparator()
 
@@ -33,6 +33,13 @@ func initSystemtray(channel chan TemplaterEvent) {
 			go func() {
 				for {
 					select {
+					case <-menuItemOpen.ClickedCh:
+						log.Debug("menuItemOpen.ClickedCh")
+
+						uid := "#" + os.Getenv("SUDO_UID")
+						url := getURL()
+						go exec.Command("sudo", "-u", uid, "xdg-open", url).Start()
+
 					case <-menuItemStatus.ClickedCh:
 						log.Debug("menuItemStatus.ClickedCh")
 
@@ -46,13 +53,6 @@ func initSystemtray(channel chan TemplaterEvent) {
 						} else {
 							menuItemStatus.Check()
 						}
-
-					case <-menuItemSettings.ClickedCh:
-						log.Debug("menuItemSettings.ClickedCh")
-
-						uid := "#" + os.Getenv("SUDO_UID")
-						url := getURL()
-						go exec.Command("sudo", "-u", uid, "xdg-open", url).Start()
 
 					case <-menuItemGithub.ClickedCh:
 						log.Debug("menuItemGithub.ClickedCh")
