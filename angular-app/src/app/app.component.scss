@@ -1,0 +1,19 @@
+mat-toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+}
+
+mat-sidenav-container {
+    height: 100%;
+
+    .toolbar-padding-top {
+        padding-top: 64px;
+    }
+
+    mat-sidenav {
+        width: 200px;
+    }
+}
