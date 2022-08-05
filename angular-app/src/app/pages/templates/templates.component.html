@@ -1,1 +1,37 @@
-<p>templates works!</p>
+<div class="container">
+
+    <table mat-table [dataSource]="tableDataSource">
+        <ng-container [matColumnDef]="'second-header'">
+            <th mat-header-cell *matHeaderCellDef colspan="4">
+                <form class="search-form" [formGroup]="searchFormGroup">
+                    <mat-grid-list cols="2" rowHeight="56px">
+                        <mat-grid-tile>
+                            <mat-form-field class="search-form-field" appearance="fill">
+                                <mat-label>Search a template</mat-label>
+                                <input matInput formControlName="search"
+                                    placeholder="template name, template, variables ...">
+                            </mat-form-field>
+                        </mat-grid-tile>
+                        <mat-grid-tile class="control">
+                            <button mat-button (click)="onAddTemplate()">
+                                Add
+                            </button>
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </form>
+            </th>
+        </ng-container>
+
+        <ng-container [matColumnDef]="column" *ngFor="let column of displayedColumns">
+            <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+            <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['second-header']; sticky: true"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+</div>

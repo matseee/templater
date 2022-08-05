@@ -1,11 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TemplatesComponent } from './pages/templates/templates.component';
+import { TemplatesPage } from './pages/templates/templates.component';
 
 const routes: Routes = [
   {
-    path: '',
-    component: TemplatesComponent,
+    path: 'templates',
+    component: TemplatesPage,
+  },
+  {
+    path: '**',
+    redirectTo: 'templates',
   }
 ];
 

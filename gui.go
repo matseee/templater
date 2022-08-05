@@ -34,6 +34,6 @@ func getURL() string {
 
 func createRouter(port int) error {
 	router := gin.Default()
-	router.Static("/", "./angular-app/dist/angular-app")
+	router.Static("/", "./frontend")
 	return router.Run(":" + strconv.Itoa(port))
 }
