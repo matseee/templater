@@ -1,4 +1,4 @@
-package main
+package gui
 
 import (
 	"math/rand"
@@ -6,13 +6,14 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/matseee/templater/templater"
 	log "github.com/sirupsen/logrus"
 )
 
 var portMin, portMax int = 49152, 65535
 var port int
 
-func initGUI(channel chan TemplaterEvent) {
+func InitGUI(channel chan templater.Event) {
 	log.Debug(">> START: initGUI()")
 	defer log.Debug("<< END: initGUI()")
 

@@ -1,4 +1,4 @@
-package main
+package gui
 
 import (
 	"os"
@@ -6,10 +6,11 @@ import (
 
 	"github.com/getlantern/systray"
 	"github.com/getlantern/systray/example/icon"
+	"github.com/matseee/templater/templater"
 	log "github.com/sirupsen/logrus"
 )
 
-func initSystemtray(channel chan TemplaterEvent) {
+func InitSystemtray(channel chan templater.Event) {
 	systray.Run(
 		func() {
 			log.Debug(">> START: initSystemtray() -> onReady()")
@@ -21,11 +22,9 @@ func initSystemtray(channel chan TemplaterEvent) {
 
 			menuItemOpen := systray.AddMenuItem("Open", "Open")
 			menuItemStatus := systray.AddMenuItemCheckbox("Active", "Check Me", true)
-
 			systray.AddSeparator()
 
 			menuItemGithub := systray.AddMenuItem("Homepage", "Visit homepage")
-
 			systray.AddSeparator()
 
 			menuItemQuit := systray.AddMenuItem("Quit", "Quit the whole app")
@@ -43,10 +42,10 @@ func initSystemtray(channel chan TemplaterEvent) {
 					case <-menuItemStatus.ClickedCh:
 						log.Debug("menuItemStatus.ClickedCh")
 
-						event := CreateEvent()
-						event.Type = TemplaterStatus
+						event := templater.CreateEvent()
+						event.Type = templater.StatusEvent
 						event.ValueBool = !menuItemStatus.Checked()
-						channel <- event
+						templater.SendEvent(event)
 
 						if menuItemStatus.Checked() {
 							menuItemStatus.Uncheck()
@@ -63,20 +62,19 @@ func initSystemtray(channel chan TemplaterEvent) {
 					case <-menuItemQuit.ClickedCh:
 						log.Debug("menuItemQuit.ClickedCh")
 
-						event := CreateEvent()
-						event.Type = Quit
-						channel <- event
+						event := templater.CreateEvent()
+						event.Type = templater.QuitEvent
+						templater.SendEvent(event)
 
 						systray.Quit()
 					}
 				}
 			}()
 
-			event := CreateEvent()
-			event.Type = TemplaterStatus
+			event := templater.CreateEvent()
+			event.Type = templater.StatusEvent
 			event.ValueBool = true
-
-			channel <- event
+			templater.SendEvent(event)
 		},
 		func() {
 			log.Debug(">> START: initSystemtray() -> onExit()")
