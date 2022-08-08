@@ -15,6 +15,7 @@ steps:
   image: circleci/golang:1.17-buster-browsers-legacy
   user: root
   commands:
+    - apt-get update
     - apt-get install libfftw3-dev
     - apt-get install libsndfile1-dev
     - go test ./...
