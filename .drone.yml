@@ -1,0 +1,19 @@
+kind: pipeline
+type: docker
+name: build
+
+steps:
+- name: build-frontend
+  image: circleci/node:14.18.2-buster
+  user: root
+  commands:
+    - cd angular-app/
+    - npm install
+    - npm run build --configuration=production
+
+- name: build-backend
+  image: circleci/golang:1.17-buster-browsers-legacy
+  user: root
+  commands:
+    - go test -v ./...
+    - go build -o bin/templater
