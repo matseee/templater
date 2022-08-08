@@ -16,4 +16,6 @@ steps:
   user: root
   commands:
     - go test ./...
+    - apt-get install libfftw3-dev
+    - apt-get install libsndfile1-dev
     - go build -o bin/templater
