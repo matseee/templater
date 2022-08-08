@@ -4,7 +4,7 @@ name: build
 
 steps:
 - name: build-angular
-  image: circleci/node:14.18.2-buster
+  image: matseee/golang-node:go1.19.0-node17-alpine3.16
   user: root
   commands:
     - cd angular-app/
@@ -12,7 +12,7 @@ steps:
     - npm run build --configuration=production
 
 - name: build-golang
-  image: circleci/golang:1.17-buster-browsers-legacy
+  image: matseee/golang-node:go1.19.0-node17-alpine3.16
   user: root
   commands:
     - apt-get update
