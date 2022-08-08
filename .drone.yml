@@ -15,8 +15,5 @@ steps:
   image: matseee/golang-node:go1.19.0-node17-alpine3.16
   user: root
   commands:
-    - apt-get update
-    - apt-get install libfftw3-dev
-    - apt-get install libsndfile1-dev
     - go test ./...
     - go build -o bin/templater
