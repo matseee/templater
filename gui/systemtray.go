@@ -1,13 +1,16 @@
-package main
+package gui
 
 import (
+	"os"
+	"os/exec"
+
 	"github.com/getlantern/systray"
 	"github.com/getlantern/systray/example/icon"
+	"github.com/matseee/templater/templater"
 	log "github.com/sirupsen/logrus"
-	"github.com/skratchdot/open-golang/open"
 )
 
-func initSystemtray(channel chan TemplaterEvent) {
+func InitSystemtray(channel chan templater.Event) {
 	systray.Run(
 		func() {
 			log.Debug(">> START: initSystemtray() -> onReady()")
@@ -17,13 +20,11 @@ func initSystemtray(channel chan TemplaterEvent) {
 			systray.SetTooltip("Templater")
 			systray.SetTemplateIcon(icon.Data, icon.Data)
 
+			menuItemOpen := systray.AddMenuItem("Open", "Open")
 			menuItemStatus := systray.AddMenuItemCheckbox("Active", "Check Me", true)
-			menuItemSettings := systray.AddMenuItem("Settings", "Settings")
-
 			systray.AddSeparator()
 
 			menuItemGithub := systray.AddMenuItem("Homepage", "Visit homepage")
-
 			systray.AddSeparator()
 
 			menuItemQuit := systray.AddMenuItem("Quit", "Quit the whole app")
@@ -31,13 +32,20 @@ func initSystemtray(channel chan TemplaterEvent) {
 			go func() {
 				for {
 					select {
+					case <-menuItemOpen.ClickedCh:
+						log.Debug("menuItemOpen.ClickedCh")
+
+						uid := "#" + os.Getenv("SUDO_UID")
+						url := getURL()
+						go exec.Command("sudo", "-u", uid, "xdg-open", url).Start()
+
 					case <-menuItemStatus.ClickedCh:
 						log.Debug("menuItemStatus.ClickedCh")
 
-						event := CreateEvent()
-						event.Type = TemplaterStatus
+						event := templater.CreateEvent()
+						event.Type = templater.StatusEvent
 						event.ValueBool = !menuItemStatus.Checked()
-						channel <- event
+						templater.SendEvent(event)
 
 						if menuItemStatus.Checked() {
 							menuItemStatus.Uncheck()
@@ -45,35 +53,28 @@ func initSystemtray(channel chan TemplaterEvent) {
 							menuItemStatus.Check()
 						}
 
-					case <-menuItemSettings.ClickedCh:
-						log.Debug("menuItemSettings.ClickedCh")
-						event := CreateEvent()
-						event.Type = OpenSettings
-						channel <- event
-
 					case <-menuItemGithub.ClickedCh:
 						log.Debug("menuItemGithub.ClickedCh")
 
-						open.Run("https://github.com/matseee/templater")
+						uid := "#" + os.Getenv("SUDO_UID")
+						go exec.Command("sudo", "-u", uid, "xdg-open", "https://github.com/matseee/templater").Start()
 
 					case <-menuItemQuit.ClickedCh:
 						log.Debug("menuItemQuit.ClickedCh")
 
-						event := CreateEvent()
-						event.Type = Quit
-						channel <- event
+						event := templater.CreateEvent()
+						event.Type = templater.QuitEvent
+						templater.SendEvent(event)
 
 						systray.Quit()
 					}
 				}
-
 			}()
 
-			event := CreateEvent()
-			event.Type = TemplaterStatus
+			event := templater.CreateEvent()
+			event.Type = templater.StatusEvent
 			event.ValueBool = true
-
-			channel <- event
+			templater.SendEvent(event)
 		},
 		func() {
 			log.Debug(">> START: initSystemtray() -> onExit()")

@@ -1,0 +1,29 @@
+<mat-toolbar>
+  <span>templater</span>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav class="toolbar-padding-top" opened mode="side">
+    <mat-nav-list>
+
+      <mat-list-item>
+        <a matLine href="/templates">Templates</a>
+        <button mat-icon-button>
+          <mat-icon>info</mat-icon>
+        </button>
+      </mat-list-item>
+
+      <mat-list-item>
+        <a matLine href="/settings">Settings</a>
+        <button mat-icon-button>
+          <mat-icon>info</mat-icon>
+        </button>
+      </mat-list-item>
+
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <div class="toolbar-padding-top">
+    <router-outlet></router-outlet>
+  </div>
+</mat-sidenav-container>
