@@ -2,35 +2,50 @@ package gui
 
 import (
 	"math/rand"
+	"net"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/matseee/templater/templater"
-	log "github.com/sirupsen/logrus"
 )
 
-var portMin, portMax int = 49152, 65535
-var port int
+const (
+	PORTMIN, PORTMAX int = 49152, 65535
+)
 
-func InitGUI(channel chan templater.Event) {
-	log.Debug(">> START: initGUI()")
-	defer log.Debug("<< END: initGUI()")
+var (
+	port int
+)
 
+func InitGUI(channel chan templater.Event) error {
 	port = getRandomPort()
 
-	for createRouter(port) != nil {
+	for !isPortAvailable(port) {
 		port = getRandomPort()
 	}
+
+	return createRouter(port)
 }
 
 func getRandomPort() int {
 	rand.Seed(time.Now().UnixNano())
-	return rand.Intn(portMax-portMin) + portMin
+	return rand.Intn(PORTMAX-PORTMIN) + PORTMIN
 }
 
 func getURL() string {
-	return "http://localhost:" + strconv.Itoa(port) + "/"
+	return "http://127.0.0.1:" + strconv.Itoa(port) + "/"
+}
+
+func isPortAvailable(port int) bool {
+	l, err := net.Listen("tcp", ":"+strconv.Itoa(port))
+
+	if err != nil {
+		return false
+	}
+
+	l.Close()
+	return true
 }
 
 func createRouter(port int) error {
