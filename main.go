@@ -24,5 +24,7 @@ func createApplication() {
 	go keylistener.ListenToChannel(channel, &keylogger)
 	go gui.InitSystemtray(channel)
 
-	gui.InitGUI(channel)
+	if err := gui.InitGUI(channel); err != nil {
+		log.Fatal(err)
+	}
 }
