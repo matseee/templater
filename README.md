@@ -1,1 +1,1 @@
-# templater - [![Build Status](https://ci.matse.work/api/badges/matse/templater/status.svg?ref=refs/heads/main)](https://ci.matse.work/matse/templater)
+# templater - [![Build Status](https://ci.matse.dev/api/badges/matse/templater/status.svg?ref=refs/heads/main)](https://ci.matse.dev/matse/templater)
