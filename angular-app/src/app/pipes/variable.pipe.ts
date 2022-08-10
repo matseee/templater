@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Variable } from './../models/variable.model';
 
 @Pipe({
-  name: 'variable'
+  name: 'variables'
 })
 export class VariablePipe implements PipeTransform {
   transform(value: Variable[], displayAll: boolean = true): string {

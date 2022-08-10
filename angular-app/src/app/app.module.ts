@@ -15,7 +15,9 @@ import { TemplatesPage } from './pages/templates/templates.component';
 @NgModule({
   declarations: [
     AppComponent,
-    TemplatesPage
+    TemplatesPage,
+
+    VariablePipe,
   ],
   imports: [
     BrowserModule,
