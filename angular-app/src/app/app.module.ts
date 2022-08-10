@@ -2,6 +2,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import { TemplateResource } from './resources/template.resource';
+import { TemplateResourceMock } from './resources/template.resource.mock';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,7 +24,10 @@ import { TemplatesPage } from './pages/templates/templates.component';
     HttpClientModule,
     MaterialModule,
   ],
-  providers: [],
+  providers: [
+    // TODO Remove mock
+    { provide: TemplateResource, useClass: TemplateResourceMock }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

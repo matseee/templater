@@ -3,6 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './../../material.module';
+import { TemplateResource } from './../../resources/template.resource';
+import { TemplateResourceMock } from './../../resources/template.resource.mock';
 
 import { TemplatesPage } from './templates.component';
 
@@ -18,7 +20,10 @@ describe('TemplatesPage', () => {
         HttpClientModule,
         MaterialModule,
       ],
-      declarations: [TemplatesPage]
+      declarations: [TemplatesPage],
+      providers: [
+        { provide: TemplateResource, useClass: TemplateResourceMock }
+      ]
     })
       .compileComponents();
 
