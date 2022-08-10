@@ -1,16 +1,25 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from './../material.module';
 
 import { TemplateFacade } from './template.facade';
 
-describe('TemplateService', () => {
-  let service: TemplateFacade;
+describe('TemplateFacade', () => {
+  let facade: TemplateFacade;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(TemplateFacade);
+    TestBed.configureTestingModule({
+      imports: [
+        ReactiveFormsModule,
+        HttpClientModule,
+        MaterialModule,
+      ]
+    });
+    facade = TestBed.inject(TemplateFacade);
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(facade).toBeTruthy();
   });
 });
