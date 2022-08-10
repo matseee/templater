@@ -15,21 +15,21 @@ var (
 
 func InitSystemtray(channel chan templater.Event) {
 	systray.Run(
-		onSystemtrayReady,
-		onSystemtrayExit,
+		onReady,
+		onExit,
 	)
 }
 
-func onSystemtrayReady() {
-	createSystemtrayMenuItems()
-	listenToMenuEvents()
+func onReady() {
+	createMenuItems()
+	handleMenuItemEvents()
 }
 
-func onSystemtrayExit() {
+func onExit() {
 	// do nothing
 }
 
-func createSystemtrayMenuItems() {
+func createMenuItems() {
 	systray.SetTitle("Templater")
 	systray.SetTooltip("Templater")
 	systray.SetTemplateIcon(icon.Data, icon.Data)
@@ -44,7 +44,7 @@ func createSystemtrayMenuItems() {
 	menuItemQuit = systray.AddMenuItem("Quit", "Quit the whole app")
 }
 
-func listenToMenuEvents() {
+func handleMenuItemEvents() {
 	for {
 		select {
 		case <-menuItemOpen.ClickedCh:
@@ -60,9 +60,7 @@ func listenToMenuEvents() {
 }
 
 func onOpenGUI() {
-	uid := "#" + os.Getenv("SUDO_UID")
-	url := getURL()
-	go exec.Command("sudo", "-u", uid, "xdg-open", url).Start()
+	go exec.Command("sudo", "-u", getSudoUID(), "xdg-open", getURL()).Start()
 }
 
 func onToggleTemplaterActive() {
@@ -79,8 +77,7 @@ func onToggleTemplaterActive() {
 }
 
 func onOpenWebpage() {
-	uid := "#" + os.Getenv("SUDO_UID")
-	go exec.Command("sudo", "-u", uid, "xdg-open", "https://github.com/matseee/templater").Start()
+	go exec.Command("sudo", "-u", getSudoUID(), "xdg-open", "https://github.com/matseee/templater").Start()
 }
 
 func onQuit() {
@@ -89,4 +86,8 @@ func onQuit() {
 	templater.SendEvent(event)
 
 	systray.Quit()
+}
+
+func getSudoUID() string {
+	return "#" + os.Getenv("SUDO_UID")
 }
