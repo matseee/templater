@@ -4,11 +4,25 @@ import { from, Observable } from 'rxjs';
 import { Status } from './../models/status.model';
 import { Template } from './../models/template.model';
 
+export interface TemplateResourceInterface {
+    // templater application status
+    readStatus(): Observable<Status>;
+
+    // all templates
+    readTemplates(): Observable<Template[]>;
+
+    // single template
+    createTemplate(template: Template): Observable<boolean>;
+    readTemplate(template: Template): Observable<Template>;
+    updateTemplate(template: Template): Observable<boolean>;
+    deleteTemplate(template: Template): Observable<boolean>;
+}
+
 @Injectable({ providedIn: 'root' })
-export class TemplateResource {
+export class TemplateResource implements TemplateResourceInterface {
     constructor(protected myHttpClient: HttpClient) { }
 
-    getStatus(): Observable<Status> {
+    readStatus(): Observable<Status> {
         const status: Status = {
             isActive: true,
         };
@@ -16,7 +30,27 @@ export class TemplateResource {
         return from([status]);
     }
 
-    getTemplates(): Observable<Template[]> {
+    createTemplate(template: Template): Observable<boolean> {
+        // TODO
+        return from([true]);
+    }
+
+    readTemplate(template: Template): Observable<Template> {
+        // TODO
+        return from([template]);
+    }
+
+    updateTemplate(template: Template): Observable<boolean> {
+        // TODO
+        return from([true]);
+    }
+
+    deleteTemplate(template: Template): Observable<boolean> {
+        // TODO
+        return from([true]);
+    }
+
+    readTemplates(): Observable<Template[]> {
         const templates: Template[] = [
             {
                 id: 'template1',

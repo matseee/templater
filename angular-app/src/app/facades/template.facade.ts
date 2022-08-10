@@ -30,10 +30,10 @@ export class TemplateFacade {
   }
 
   protected refresh() {
-    this.myTemplateResource.getStatus()
+    this.myTemplateResource.readStatus()
       .subscribe((status: Status) => this.updateState({ ..._state, status }));
 
-    this.myTemplateResource.getTemplates()
+    this.myTemplateResource.readTemplates()
       .subscribe((templates: Template[]) => this.updateState({ ..._state, templates }));
   }
 
