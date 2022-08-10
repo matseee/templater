@@ -21,6 +21,7 @@ steps:
     - test-golang
     - test-angular
   commands:
+    - cd angular-app/
     - npm run build --configuration=production
 
 - name: build-golang
