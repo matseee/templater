@@ -15,7 +15,7 @@ export class TemplatesPage implements OnInit, OnDestroy {
   searchFormGroup: FormGroup;
 
   tableDataSource: MatTableDataSource<Template>;
-  displayedColumns: string[] = ['description', 'template', 'variables', 'control'];
+  displayedColumns: string[] = ['name', 'template', 'variables', 'control'];
 
   protected subscription: Subscription;
 

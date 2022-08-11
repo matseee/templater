@@ -11,7 +11,7 @@ export let mockStatus: Status = {
 export let mockTemplates: Template[] = [
     {
         id: 'template1',
-        description: 'template1',
+        name: 'template1',
         template: 'template1',
         variables: [
             {
@@ -26,7 +26,7 @@ export let mockTemplates: Template[] = [
     },
     {
         id: 'template2',
-        description: 'template2',
+        name: 'template2',
         template: 'template2',
         variables: [
             {

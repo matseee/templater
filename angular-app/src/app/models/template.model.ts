@@ -2,7 +2,7 @@ import { Variable } from './variable.model';
 
 export interface Template {
     id: string;
-    description: string;
+    name: string;
     template: string;
     variables: Variable[];
 }

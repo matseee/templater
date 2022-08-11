@@ -48,7 +48,7 @@ describe('TemplatesPage', () => {
     expect(buttonAdd).toBeTruthy();
   });
 
-  it('should contain a table with the columns desc., template, variables, control', () => {
+  it('should contain a table with the columns name, template, variables, control', () => {
     const compiled = fixture.debugElement.nativeElement;
     const columns = compiled.querySelectorAll('.table-column-header');
 

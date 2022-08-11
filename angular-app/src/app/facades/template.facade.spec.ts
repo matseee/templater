@@ -45,7 +45,7 @@ describe('TemplateFacade', () => {
 
     const template: Template = {
       id: 'template3',
-      description: 'template3',
+      name: 'template3',
       template: 'template3',
       variables: []
     };
@@ -63,7 +63,7 @@ describe('TemplateFacade', () => {
 
     const firstTemplate = {
       id: state.templates[0].id,
-      description: 'template1 edited',
+      name: 'template1 edited',
       template: 'template1 edited',
       variables: [],
     };
@@ -72,7 +72,7 @@ describe('TemplateFacade', () => {
 
     await timer(300).toPromise();
     state = facade.getStateSnapshot();
-    expect(state.templates[0].description).toBe('template1 edited');
+    expect(state.templates[0].name).toBe('template1 edited');
   });
 
   it('should delete the first template', async () => {
@@ -81,7 +81,7 @@ describe('TemplateFacade', () => {
 
     const firstTemplate = {
       id: state.templates[0].id,
-      description: state.templates[0].description,
+      name: state.templates[0].name,
       template: state.templates[0].template,
       variables: state.templates[0].variables,
     };
