@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { TemplateFacade } from './../../facades/template.facade';
 import { TemplateState } from './../../facades/template.state';
 import { Template } from './../../models/template.model';
-import { LogService } from './../../services/log.service';
 
 @Component({
   selector: 'app-templates',
@@ -22,7 +21,6 @@ export class TemplatesPage implements OnInit, OnDestroy {
 
   constructor(
     public myFormbuilder: FormBuilder,
-    public myLogger: LogService,
     public myTemplateFacade: TemplateFacade,
   ) {
     this.searchFormGroup = this.myFormbuilder.group({
@@ -41,7 +39,7 @@ export class TemplatesPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.myLogger.debug('TemplatePage.onInit()');
+    /** */
   }
 
   ngOnDestroy() {
@@ -51,7 +49,7 @@ export class TemplatesPage implements OnInit, OnDestroy {
   }
 
   onAddTemplate() {
-    this.myLogger.debug('TemplatePage.onAddTemplate()');
+    /** */
   }
 
 }

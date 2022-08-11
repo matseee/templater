@@ -35,4 +35,24 @@ describe('TemplatesPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should contain a search input', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    const inputSearch = compiled.querySelector('#input-search');
+    expect(inputSearch).toBeTruthy();
+  });
+
+  it('should contain an add button', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    const buttonAdd = compiled.querySelector('#button-add');
+    expect(buttonAdd).toBeTruthy();
+  });
+
+  it('should contain a table with the columns desc., template, variables, control', () => {
+    const compiled = fixture.debugElement.nativeElement;
+    const columns = compiled.querySelectorAll('.table-column-header');
+
+    expect(columns.length).toBe(4);
+    // TODO check each
+  });
 });
