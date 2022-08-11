@@ -12,32 +12,12 @@ export let mockTemplates: Template[] = [
     {
         id: 'template1',
         name: 'template1',
-        template: 'template1',
-        variables: [
-            {
-                id: 'template1-variable1',
-                name: 'template1-variable1',
-            },
-            {
-                id: 'template1-variable2',
-                name: 'template1-variable2',
-            }
-        ]
+        template: 'template1'
     },
     {
         id: 'template2',
         name: 'template2',
-        template: 'template2',
-        variables: [
-            {
-                id: 'template2-variable1',
-                name: 'template2-variable1',
-            },
-            {
-                id: 'template2-variable2',
-                name: 'template2-variable2',
-            }
-        ]
+        template: 'template2'
     }
 ];
 

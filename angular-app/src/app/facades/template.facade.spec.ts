@@ -12,7 +12,6 @@ import { TemplateFacade } from './template.facade';
 
 describe('TemplateFacade', () => {
   let facade: TemplateFacade;
-  let spy: jasmine.SpyObj<TemplateResource>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -46,8 +45,7 @@ describe('TemplateFacade', () => {
     const template: Template = {
       id: 'template3',
       name: 'template3',
-      template: 'template3',
-      variables: []
+      template: 'template3'
     };
 
     facade.createTemplate(template);
@@ -65,7 +63,6 @@ describe('TemplateFacade', () => {
       id: state.templates[0].id,
       name: 'template1 edited',
       template: 'template1 edited',
-      variables: [],
     };
 
     facade.updateTemplate(firstTemplate);
@@ -83,7 +80,6 @@ describe('TemplateFacade', () => {
       id: state.templates[0].id,
       name: state.templates[0].name,
       template: state.templates[0].template,
-      variables: state.templates[0].variables,
     };
 
     facade.deleteTemplate(firstTemplate);
