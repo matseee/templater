@@ -1,0 +1,18 @@
+<ng-container>
+    <h2 class="title">Template {{ templateName }}</h2>
+    <form class="form-group">
+        <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input id="input-name" matInput formControlName="name" placeholder="give it a name">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Template</mat-label>
+            <textarea id="textarea-template" matInput formControlName="template" placeholder="your template goes here">
+            </textarea>
+        </mat-form-field>
+    </form>
+
+    <button id="button-cancle" matButton>Cancle</button>
+    <button id="button-save" matButton>Save</button>
+</ng-container>

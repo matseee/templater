@@ -52,7 +52,7 @@ describe('TemplatesPage', () => {
     const compiled = fixture.debugElement.nativeElement;
     const columns = compiled.querySelectorAll('.table-column-header');
 
-    expect(columns.length).toBe(4);
+    expect(columns.length).toBe(3);
     // TODO check each
   });
 });
