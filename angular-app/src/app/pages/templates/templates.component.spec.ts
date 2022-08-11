@@ -53,6 +53,5 @@ describe('TemplatesPage', () => {
     const columns = compiled.querySelectorAll('.table-column-header');
 
     expect(columns.length).toBe(3);
-    // TODO check each
   });
 });
