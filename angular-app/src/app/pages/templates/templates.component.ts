@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
+import { TemplateModalComponent } from './../../components/template-modal/template-modal.component';
 import { TemplateFacade } from './../../facades/template.facade';
 import { TemplateState } from './../../facades/template.state';
 import { Template } from './../../models/template.model';
@@ -15,12 +17,13 @@ export class TemplatesPage implements OnInit, OnDestroy {
   searchFormGroup: FormGroup;
 
   tableDataSource: MatTableDataSource<Template>;
-  displayedColumns: string[] = ['description', 'template', 'variables', 'control'];
+  displayedColumns: string[] = ['name', 'template', 'control'];
 
   protected subscription: Subscription;
 
   constructor(
     public myFormbuilder: FormBuilder,
+    public myMatDialog: MatDialog,
     public myTemplateFacade: TemplateFacade,
   ) {
     this.searchFormGroup = this.myFormbuilder.group({
@@ -49,7 +52,12 @@ export class TemplatesPage implements OnInit, OnDestroy {
   }
 
   onAddTemplate() {
-    /** */
+    this.myMatDialog.open(TemplateModalComponent, {});
   }
 
+  onEditTemplate(template: Template) {
+    this.myMatDialog.open(TemplateModalComponent, {
+      data: { data: template },
+    });
+  }
 }

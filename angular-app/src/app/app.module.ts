@@ -9,6 +9,7 @@ import { TemplateResourceMock } from './resources/template.resource.mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { TemplateModalComponent } from './components/template-modal/template-modal.component';
 import { MaterialModule } from './material.module';
 import { TemplatesPage } from './pages/templates/templates.component';
 
@@ -16,6 +17,7 @@ import { TemplatesPage } from './pages/templates/templates.component';
   declarations: [
     AppComponent,
     TemplatesPage,
+    TemplateModalComponent,
 
     VariablePipe,
   ],

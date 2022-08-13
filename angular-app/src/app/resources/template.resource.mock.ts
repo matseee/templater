@@ -11,38 +11,31 @@ export let mockStatus: Status = {
 export let mockTemplates: Template[] = [
     {
         id: 'template1',
-        description: 'template1',
-        template: 'template1',
-        variables: [
-            {
-                id: 'template1-variable1',
-                name: 'template1-variable1',
-            },
-            {
-                id: 'template1-variable2',
-                name: 'template1-variable2',
-            }
-        ]
+        name: 'template1',
+        template: 'template1'
     },
     {
         id: 'template2',
-        description: 'template2',
-        template: 'template2',
-        variables: [
-            {
-                id: 'template2-variable1',
-                name: 'template2-variable1',
-            },
-            {
-                id: 'template2-variable2',
-                name: 'template2-variable2',
-            }
-        ]
+        name: 'template2',
+        template: 'template2'
     }
 ];
 
 @Injectable({ providedIn: 'root' })
 export class TemplateResourceMock implements TemplateResourceInterface {
+    myMockTemplates: Template[] = [
+        {
+            id: 'template1',
+            name: 'template1',
+            template: 'template1'
+        },
+        {
+            id: 'template2',
+            name: 'template2',
+            template: 'template2'
+        }
+    ];
+
     constructor() { }
 
     readStatus(): Observable<Status> {
@@ -55,27 +48,27 @@ export class TemplateResourceMock implements TemplateResourceInterface {
     }
 
     readTemplates(): Observable<Template[]> {
-        return from([mockTemplates]);
+        return from([this.myMockTemplates]);
     };
 
     createTemplate(template: Template): Observable<boolean> {
-        mockTemplates.push(template);
+        this.myMockTemplates.push(template);
         return from([true]);
     }
 
     updateTemplate(template: Template): Observable<boolean> {
-        const index = mockTemplates.findIndex((tmp) => tmp.id === template.id);
+        const index = this.myMockTemplates.findIndex((tmp) => tmp.id === template.id);
         if (index > -1) {
-            mockTemplates[index] = template;
+            this.myMockTemplates[index] = template;
             return from([true]);
         }
         return from([false]);
     }
 
     deleteTemplate(template: Template): Observable<boolean> {
-        const index = mockTemplates.findIndex((tmp) => tmp.id === template.id);
+        const index = this.myMockTemplates.findIndex((tmp) => tmp.id === template.id);
         if (index > -1) {
-            mockTemplates.splice(index, 1);
+            this.myMockTemplates.splice(index, 1);
             return from([true]);
         }
 

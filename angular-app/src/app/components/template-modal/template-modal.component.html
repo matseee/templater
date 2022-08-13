@@ -1,0 +1,23 @@
+<ng-container>
+    <ng-container *ngIf="!isEditMode">
+        <h2 class="title">New template</h2>
+    </ng-container>
+    <ng-container *ngIf="isEditMode">
+        <h2 class="title">Template {{ templateName }}</h2>
+    </ng-container>
+    <form class="form-group" [formGroup]="formGroup">
+        <mat-form-field appearance="fill" class="template-form-field">
+            <mat-label>Name</mat-label>
+            <input id="input-name" matInput formControlName="name" placeholder="give it a name">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="template-form-field">
+            <mat-label>Template</mat-label>
+            <textarea id="textarea-template" matInput formControlName="template" placeholder="your template goes here">
+            </textarea>
+        </mat-form-field>
+    </form>
+
+    <button id="button-save" mat-button [disabled]="formGroup.invalid" (click)="onSave()">Save</button>
+    <button id="button-cancle" mat-button (click)="onCancle()">Cancle</button>
+</ng-container>
