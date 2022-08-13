@@ -2,6 +2,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TemplateFacade } from './../../facades/template.facade';
@@ -62,6 +64,8 @@ describe('TemplateModalComponent', () => {
         ReactiveFormsModule,
         HttpClientModule,
         MaterialModule,
+        MatFormFieldModule,
+        MatInputModule,
       ],
       declarations: [TemplateModalComponent],
       providers: [
@@ -190,6 +194,8 @@ describe('TemplateModalComponent-WithData', () => {
         ReactiveFormsModule,
         HttpClientModule,
         MaterialModule,
+        MatFormFieldModule,
+        MatInputModule,
       ],
       declarations: [TemplateModalComponent],
       providers: [
