@@ -12,8 +12,11 @@ import { TemplateFacade } from './template.facade';
 
 describe('TemplateFacade', () => {
   let facade: TemplateFacade;
+  let templateResourceMock: TemplateResourceMock;
 
   beforeEach(() => {
+    templateResourceMock = new TemplateResourceMock();
+
     TestBed.configureTestingModule({
       imports: [
         ReactiveFormsModule,
@@ -21,7 +24,7 @@ describe('TemplateFacade', () => {
         MaterialModule,
       ],
       providers: [
-        { provide: TemplateResource, useClass: TemplateResourceMock }
+        { provide: TemplateResource, useValue: templateResourceMock }
       ]
     });
 

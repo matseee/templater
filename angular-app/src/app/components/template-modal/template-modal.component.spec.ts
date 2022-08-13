@@ -47,6 +47,7 @@ class MatDialogRefMock {
 describe('TemplateModalComponent', () => {
   let templateFacade: TemplateFacadeMock;
   let matDialogRef: MatDialogRefMock;
+
   let component: TemplateModalComponent;
   let fixture: ComponentFixture<TemplateModalComponent>;
   let compiled: any;
