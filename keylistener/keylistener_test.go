@@ -18,13 +18,9 @@ func Test_ListenToChannel(t *testing.T) {
 		t.Error(str)
 	}
 
-	if !k.isCreated {
-		t.Error("Keylogger should be created - FAILED")
-	} else {
-		t.Log("Keylogger was created - PASSED")
-	}
+	status := k.GetStatus()
 
-	if k.isListening {
+	if status.IsListening {
 		t.Error("Keylogger should not listen after creation - FAILED")
 	} else {
 		t.Log("Keylogger is not listening - PASSED")
@@ -35,7 +31,9 @@ func Test_ListenToChannel(t *testing.T) {
 	event.ValueBool = true
 	c <- event
 
-	if !k.isListening {
+	status = k.GetStatus()
+
+	if !status.IsListening {
 		t.Error("Keylogger should listen after start event - FAILED")
 	} else {
 		t.Log("Keylogger is listening after start event - PASSED")
@@ -45,15 +43,18 @@ func Test_ListenToChannel(t *testing.T) {
 	event.Type = templater.StatusEvent
 	event.ValueBool = false
 	c <- event
-
 	time.Sleep(100 * time.Millisecond)
-	if k.isListening {
+
+	status = k.GetStatus()
+
+	if status.IsListening {
 		t.Error("Keylogger should not listen after stop event - FAILED")
 	} else {
 		t.Log("Keylogger isn't listening after stop event - PASSED")
 	}
 
 	err = k.Destroy()
+
 	if err != nil {
 		str := err.Error() + " - FAILED"
 		t.Error(str)
@@ -61,55 +62,48 @@ func Test_ListenToChannel(t *testing.T) {
 		t.Log("Keylogger destroyed without error - PASSED")
 	}
 
-	if k.isCreated {
+	status = k.GetStatus()
+
+	if status.IsCreated {
 		t.Error("Keylogger should not be created after destroy() - FAILED")
 	} else {
 		t.Log("Keylogger is destroyed - PASSED")
 	}
 }
 
-// MOCKING KEYLOGGER
 type KeyloggerMock struct {
-	outChannel  chan KeyEvent
-	isCreated   bool
-	isListening bool
+	outChannel chan KeyEvent
+	status     KeyloggerStatus
 }
 
-func (k *KeyloggerMock) Create() error {
-	k.isCreated = true
-	return nil
-}
-
-func (k *KeyloggerMock) Destroy() error {
-	k.isCreated = false
-	return nil
-}
-
-func (k *KeyloggerMock) Start() chan KeyEvent {
-	if k.isListening {
-		return k.outChannel
+func (k *KeyloggerMock) Start() (chan KeyEvent, error) {
+	if k.status.IsListening {
+		return k.outChannel, nil
 	}
 
 	k.outChannel = make(chan KeyEvent)
-	k.isListening = true
-	return k.outChannel
+	k.status.IsCreated = true
+	k.status.IsListening = true
+	return k.outChannel, nil
 }
 
 func (k *KeyloggerMock) Stop() {
-	if !k.isListening {
+	if !k.status.IsListening {
 		return
 	}
 
 	close(k.outChannel)
 	k.outChannel = nil
 
-	k.isListening = false
+	k.status.IsListening = false
 }
 
-func (k *KeyloggerMock) IsCreated() bool {
-	return k.isCreated
+func (k *KeyloggerMock) Destroy() error {
+	k.status.IsCreated = false
+	k.status.IsListening = false
+	return nil
 }
 
-func (k *KeyloggerMock) IsListening() bool {
-	return k.isListening
+func (k *KeyloggerMock) GetStatus() KeyloggerStatus {
+	return k.status
 }

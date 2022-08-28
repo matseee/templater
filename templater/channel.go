@@ -4,6 +4,15 @@ import (
 	"errors"
 )
 
+type EventChannel struct {
+	Channel chan Event
+}
+
+func (ec *EventChannel) Send(event Event) (Event, error) {
+	// HERE
+	return event, nil
+}
+
 var (
 	channelCreated bool = false
 	channel        chan Event

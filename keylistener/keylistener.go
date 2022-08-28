@@ -6,18 +6,12 @@ import (
 )
 
 func ListenToChannel(c chan templater.Event, k Keylogger) error {
-	err := k.Create()
-
-	if err != nil {
-		return err
-	}
-
 	go func() {
 		for event := range c {
 			switch event.Type {
 			case templater.StatusEvent:
 				if event.ValueBool {
-					keyChannel := k.Start()
+					keyChannel, _ := k.Start()
 					go listenToKeylogger(keyChannel)
 				} else {
 					k.Stop()
