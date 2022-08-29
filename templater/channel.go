@@ -1,37 +1,29 @@
 package templater
 
-import (
-	"errors"
-)
+import "errors"
+
+func CreateEventChannel() EventChannel {
+	return EventChannel{
+		Channel: make(chan Event),
+	}
+}
 
 type EventChannel struct {
 	Channel chan Event
 }
 
-func (ec *EventChannel) Send(event Event) (Event, error) {
-	// HERE
-	return event, nil
-}
-
-var (
-	channelCreated bool = false
-	channel        chan Event
-)
-
-func CreateChannel() chan Event {
-	if !channelCreated {
-		channelCreated = true
-		channel = make(chan Event)
+func (ec *EventChannel) Send(event Event) error {
+	if err := ec.checkChannel(); err != nil {
+		return err
 	}
 
-	return channel
+	ec.Channel <- event
+	return nil
 }
 
-func SendEvent(event Event) (Event, error) {
-	if !channelCreated {
-		return event, errors.New("channel is not initialized")
+func (ec *EventChannel) checkChannel() error {
+	if ec.Channel == nil {
+		return errors.New("channel is closed or nil")
 	}
-
-	channel <- event
-	return event, nil
+	return nil
 }

@@ -5,83 +5,43 @@ import (
 	"time"
 )
 
-func resetGlobals() {
-	channelCreated = false
-	channel = nil
+func Test_CreateEventChannel_should_create_a_EventChannel_object_with_Channel(t *testing.T) {
+	eventChannel := CreateEventChannel()
+
+	if eventChannel.Channel == nil {
+		t.Error("CreateEventChannel() should create a EventChannel object with a chan Event")
+	}
 }
 
-func Test_CreateChannel(t *testing.T) {
-	defer resetGlobals()
-
-	channel := CreateChannel()
-
-	if channel == nil {
-		t.Error("CreateChannel should create a channel - FAILED")
-	} else {
-		t.Log("CreatedChannel did create a channel - PASSED")
-	}
-
-	channel2 := CreateChannel()
-
-	if channel != channel2 {
-		close(channel)
-		close(channel2)
-		t.Error("CreateChannel should only create one channel - FAILED")
-	} else {
-		t.Log("CreatedChannel created only one channel - PASSED")
-	}
-
-	close(channel)
-}
-
-func Test_SendEvent(t *testing.T) {
-	defer resetGlobals()
-
-	var receivedMessage bool = false
-
+func Test_EventChannelSend_should_return_an_error_when_channel_is_nil(t *testing.T) {
+	eventChannel := EventChannel{}
 	event := CreateEvent()
-	_, err := SendEvent(event)
+
+	err := eventChannel.Send(event)
 
 	if err == nil {
-		t.Error("SendEvent should throw an error that the channel is not initialized - FAILED")
-	} else {
-		t.Log("SendEvent threw an error that the channel is not initialized - PASSED")
+		t.Error("EventChannel.Send() should return an error when channel is nil")
 	}
+}
 
-	channel := CreateChannel()
+func Test_EventChannelSend_should_send_a_event_over_the_channel(t *testing.T) {
+	var receivedMessage = false
+	event := CreateEvent()
+
+	eventChannel := CreateEventChannel()
 
 	go func() {
-		for _event := range channel {
-			receivedMessage = true
-
-			if _event != event {
-				t.Error("SendEvent did not send the right event - FAILED")
-			} else {
-				t.Log("SendEvent sent the right event - PASSED")
+		for _event := range eventChannel.Channel {
+			if _event == event {
+				receivedMessage = true
 			}
 		}
 	}()
 
-	_event, err := SendEvent(event)
-
-	if err != nil {
-		str := err.Error() + " - FAILED"
-		t.Error(str)
-	}
-
-	if _event != event {
-		t.Error("SendEvent did not send the required event - FAILED")
-	} else {
-		t.Log("SendEvent sent the required event - PASSED")
-	}
+	eventChannel.Send(event)
 
 	time.Sleep(200 * time.Millisecond)
-
 	if receivedMessage == false {
-		t.Error("SendEvent did not receive the required event - FAILED")
-	} else {
-		t.Log("SendEvent received the right event - PASSED")
+		t.Error("EventChannel.Send() should send an event over the EventChannel.")
 	}
-
-	close(channel)
 }
