@@ -5,6 +5,18 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func CreateKeylistener(eventChannel templater.EventChannel, keylogger Keylogger) Keylistener {
+	return Keylistener{
+		eventChannel,
+		keylogger,
+	}
+}
+
+type Keylistener struct {
+	eventChannel templater.EventChannel
+	keylogger    Keylogger
+}
+
 func ListenToChannel(c chan templater.Event, k Keylogger) error {
 	go func() {
 		for event := range c {

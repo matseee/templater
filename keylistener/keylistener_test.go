@@ -7,6 +7,36 @@ import (
 	"github.com/matseee/templater/templater"
 )
 
+func createKeyloggerMock() Keylogger {
+	return &KeyloggerMock{}
+}
+
+func createChannelAndMock() (templater.EventChannel, Keylogger) {
+	return templater.CreateEventChannel(), createKeyloggerMock()
+}
+
+func Test_CreateKeylistener_should_create_an_initial_keylistener_object(t *testing.T) {
+	eventChannel, keylogger := createChannelAndMock()
+
+	var testKeylistener = Keylistener{
+		eventChannel,
+		keylogger,
+	}
+
+	keylistener := CreateKeylistener(eventChannel, keylogger)
+
+	if testKeylistener != keylistener {
+		t.Error("CreateKeylistener did not create an normal keylistener object")
+	}
+}
+
+func Test_Keylistener_should_listen_on_keyevents(t *testing.T) {
+	eventChannel, keylogger := createChannelAndMock()
+	keylistener := CreateKeylistener(eventChannel, keylogger)
+
+	if keylogger.GetStatus().IsCreated()
+}
+
 func Test_ListenToChannel(t *testing.T) {
 	var c chan templater.Event = make(chan templater.Event)
 	var k KeyloggerMock = KeyloggerMock{}
