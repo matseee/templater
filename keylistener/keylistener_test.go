@@ -7,100 +7,6 @@ import (
 	"github.com/matseee/templater/templater"
 )
 
-func createKeyloggerMock() Keylogger {
-	return &KeyloggerMock{}
-}
-
-func createChannelAndMock() (templater.EventChannel, Keylogger) {
-	return templater.CreateEventChannel(), createKeyloggerMock()
-}
-
-func Test_CreateKeylistener_should_create_an_initial_keylistener_object(t *testing.T) {
-	eventChannel, keylogger := createChannelAndMock()
-
-	var testKeylistener = Keylistener{
-		eventChannel,
-		keylogger,
-	}
-
-	keylistener := CreateKeylistener(eventChannel, keylogger)
-
-	if testKeylistener != keylistener {
-		t.Error("CreateKeylistener did not create an normal keylistener object")
-	}
-}
-
-func Test_Keylistener_should_listen_on_keyevents(t *testing.T) {
-	eventChannel, keylogger := createChannelAndMock()
-	keylistener := CreateKeylistener(eventChannel, keylogger)
-
-	if keylogger.GetStatus().IsCreated()
-}
-
-func Test_ListenToChannel(t *testing.T) {
-	var c chan templater.Event = make(chan templater.Event)
-	var k KeyloggerMock = KeyloggerMock{}
-
-	err := ListenToChannel(c, &k)
-
-	if err != nil {
-		str := err.Error() + " - FAILED"
-		t.Error(str)
-	}
-
-	status := k.GetStatus()
-
-	if status.IsListening {
-		t.Error("Keylogger should not listen after creation - FAILED")
-	} else {
-		t.Log("Keylogger is not listening - PASSED")
-	}
-
-	event := templater.CreateEvent()
-	event.Type = templater.StatusEvent
-	event.ValueBool = true
-	c <- event
-
-	status = k.GetStatus()
-
-	if !status.IsListening {
-		t.Error("Keylogger should listen after start event - FAILED")
-	} else {
-		t.Log("Keylogger is listening after start event - PASSED")
-	}
-
-	event = templater.CreateEvent()
-	event.Type = templater.StatusEvent
-	event.ValueBool = false
-	c <- event
-	time.Sleep(100 * time.Millisecond)
-
-	status = k.GetStatus()
-
-	if status.IsListening {
-		t.Error("Keylogger should not listen after stop event - FAILED")
-	} else {
-		t.Log("Keylogger isn't listening after stop event - PASSED")
-	}
-
-	err = k.Destroy()
-
-	if err != nil {
-		str := err.Error() + " - FAILED"
-		t.Error(str)
-	} else {
-		t.Log("Keylogger destroyed without error - PASSED")
-	}
-
-	status = k.GetStatus()
-
-	if status.IsCreated {
-		t.Error("Keylogger should not be created after destroy() - FAILED")
-	} else {
-		t.Log("Keylogger is destroyed - PASSED")
-	}
-}
-
 type KeyloggerMock struct {
 	outChannel chan KeyEvent
 	status     KeyloggerStatus
@@ -136,4 +42,103 @@ func (k *KeyloggerMock) Destroy() error {
 
 func (k *KeyloggerMock) GetStatus() KeyloggerStatus {
 	return k.status
+}
+
+func (k *KeyloggerMock) SendKey(key string) {
+	k.outChannel <- KeyEvent{key, false, true}
+	time.Sleep(200 * time.Millisecond)
+}
+
+// helper functions
+func createKeyloggerMock() KeyloggerMock {
+	return KeyloggerMock{
+		make(chan KeyEvent),
+		KeyloggerStatus{},
+	}
+}
+
+func createChannelAndKeyloggerMock() (templater.EventChannel, KeyloggerMock) {
+	return templater.CreateEventChannel(), createKeyloggerMock()
+}
+
+func createChannelAndKeyloggerMockAndKeylistener() (templater.EventChannel, KeyloggerMock, Keylistener) {
+	eventChannel, keylogger := createChannelAndKeyloggerMock()
+	keylistener, _ := CreateKeylistener(eventChannel, &keylogger)
+	return eventChannel, keylogger, keylistener
+}
+
+func createChannelAndKeyloggerAndActivatedKeylistener() (templater.EventChannel, KeyloggerMock, Keylistener) {
+	eventChannel, keylogger, keylistener := createChannelAndKeyloggerMockAndKeylistener()
+	keylistener.Activate()
+	return eventChannel, keylogger, keylistener
+}
+
+func Test_CreateKeylistener_should_create_an_initial_keylistener_object(t *testing.T) {
+	_, _, keylistener := createChannelAndKeyloggerMockAndKeylistener()
+
+	status := keylistener.GetStatus()
+
+	if status.IsActive || status.KeyEventCounter > 0 {
+		t.Error("CreateKeylistener did not create an normal keylistener object")
+	}
+}
+
+func Test_KeylistenerActivate_should_active_the_keylistener_object(t *testing.T) {
+	_, _, keylistener := createChannelAndKeyloggerAndActivatedKeylistener()
+
+	if !keylistener.GetStatus().IsActive {
+		t.Error("Keylistener.Activate() should activate the keylistener object")
+	}
+}
+
+func Test_KeylistenerDeactivate_should_deactivate_the_keylistener_object(t *testing.T) {
+	_, _, keylistener := createChannelAndKeyloggerAndActivatedKeylistener()
+
+	keylistener.Deactivate()
+
+	if keylistener.GetStatus().IsActive {
+		t.Error("Keylistener.Deactivate() should deactivate the keylistener object")
+	}
+}
+
+func Test_Keylistener_should_increment_the_keyevent_counter_after_keylogger_keyevent(t *testing.T) {
+	_, keylogger, keylistener := createChannelAndKeyloggerAndActivatedKeylistener()
+
+	keylogger.SendKey("A")
+
+	if keylistener.GetStatus().KeyEventCounter == 0 {
+		t.Error("Keylistener should increment the keyevent counter after keylogger keyevent")
+	}
+}
+
+func Test_Keylistener_should_send_an_event_to_eventchannel_after_keylogger_keyevent(t *testing.T) {
+	const RESULT_KEY = "A"
+	var gotKeyEvent = false
+
+	eventChannel, keylogger, _ := createChannelAndKeyloggerAndActivatedKeylistener()
+
+	go func() {
+		for event := range eventChannel.Channel {
+			if event.Type == templater.Keylistener && event.ValueString == RESULT_KEY {
+				gotKeyEvent = true
+			}
+		}
+	}()
+
+	keylogger.SendKey("A")
+
+	if !gotKeyEvent {
+		t.Error("Keylistener should send an event over the eventchannel but did not send one")
+	}
+}
+
+func Test_Keylistener_should_not_increment_the_keyevent_counter_after_keylogger_event_when_deactivated(t *testing.T) {
+	_, keylogger, keylistener := createChannelAndKeyloggerAndActivatedKeylistener()
+
+	keylistener.Deactivate()
+	keylogger.SendKey("A")
+
+	if keylistener.GetStatus().KeyEventCounter > 0 {
+		t.Error("Keylistener should not increment the keyevent counter after keylogger event when deactivated but keyevent counter is bigger than 0")
+	}
 }

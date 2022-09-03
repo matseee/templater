@@ -1,47 +1,82 @@
 package keylistener
 
 import (
+	"fmt"
+
 	"github.com/matseee/templater/templater"
-	log "github.com/sirupsen/logrus"
 )
 
-func CreateKeylistener(eventChannel templater.EventChannel, keylogger Keylogger) Keylistener {
-	return Keylistener{
+func CreateKeylistener(eventChannel templater.EventChannel, keylogger Keylogger) (Keylistener, error) {
+	k := Keylistener{
 		eventChannel,
 		keylogger,
+		&KeylistenerStatus{},
 	}
+
+	return k, k.listen()
 }
 
 type Keylistener struct {
 	eventChannel templater.EventChannel
 	keylogger    Keylogger
+	status       *KeylistenerStatus
 }
 
-func ListenToChannel(c chan templater.Event, k Keylogger) error {
-	go func() {
-		for event := range c {
-			switch event.Type {
-			case templater.StatusEvent:
-				if event.ValueBool {
-					keyChannel, _ := k.Start()
-					go listenToKeylogger(keyChannel)
-				} else {
-					k.Stop()
-				}
-			case templater.QuitEvent:
-				k.Stop()
-			}
-		}
-	}()
+func (k *Keylistener) Activate() {
+	k.setActive(true)
+}
 
+func (k *Keylistener) Deactivate() {
+	k.setActive(false)
+}
+
+func (k *Keylistener) setActive(active bool) {
+	k.status.IsActive = active
+}
+
+func (k *Keylistener) GetStatus() KeylistenerStatus {
+	return *k.status
+}
+
+func (k *Keylistener) listen() error {
+	keyEvantChannel, err := k.keylogger.Start()
+
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+
+	go k.listenToKeyEventChannel(keyEvantChannel)
 	return nil
 }
 
-func listenToKeylogger(channel chan KeyEvent) {
-	// TODO
-	for event := range channel {
-		if event.Released {
-			log.Println("listenToKeylogger() ==> ", event.Key)
+func (k *Keylistener) listenToKeyEventChannel(keyEvantChannel chan KeyEvent) {
+	for keyEvent := range keyEvantChannel {
+		if k.isKeylistenerActive() && k.isKeyEventActive(keyEvent) {
+			k.increaseKeyEventCounter()
+			k.sendKeylistenerEventToEventChannel(keyEvent.Key)
 		}
 	}
+}
+
+func (k *Keylistener) isKeylistenerActive() bool {
+	return k.status.IsActive
+}
+
+func (k *Keylistener) isKeyEventActive(keyEvent KeyEvent) bool {
+	return keyEvent.Released
+}
+
+func (k *Keylistener) increaseKeyEventCounter() {
+	k.status.KeyEventCounter += 1
+}
+
+func (k *Keylistener) sendKeylistenerEventToEventChannel(key string) {
+	event := templater.CreateKeylistenerEvent(key)
+	k.eventChannel.Send(event)
+}
+
+type KeylistenerStatus struct {
+	IsActive        bool
+	KeyEventCounter uint64
 }
