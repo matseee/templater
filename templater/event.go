@@ -4,6 +4,7 @@ type EventStatus int64
 
 const (
 	StatusEvent EventStatus = iota
+	Keylistener
 	OpenSettingsEvent
 	QuitEvent
 )
@@ -22,4 +23,11 @@ func CreateEvent() Event {
 		ValueInt:    0,
 		ValueString: "",
 	}
+}
+
+func CreateKeylistenerEvent(key string) Event {
+	event := CreateEvent()
+	event.Type = Keylistener
+	event.ValueString = key
+	return event
 }

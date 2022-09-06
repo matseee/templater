@@ -6,11 +6,14 @@ type KeyEvent struct {
 	Released bool
 }
 
+type KeyloggerStatus struct {
+	IsCreated   bool
+	IsListening bool
+}
+
 type Keylogger interface {
-	Create() error
-	Destroy() error
-	Start() chan KeyEvent
+	Start() (chan KeyEvent, error)
 	Stop()
-	IsCreated() bool
-	IsListening() bool
+	Destroy() error
+	GetStatus() KeyloggerStatus
 }
