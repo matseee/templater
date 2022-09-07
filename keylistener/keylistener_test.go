@@ -119,7 +119,7 @@ func Test_Keylistener_should_send_an_event_to_eventchannel_after_keylogger_keyev
 
 	go func() {
 		for event := range eventChannel.Channel {
-			if event.Type == templater.Keylistener && event.ValueString == RESULT_KEY {
+			if event.Type == templater.KeylistenerEvent && event.ValueString == RESULT_KEY {
 				gotKeyEvent = true
 			}
 		}

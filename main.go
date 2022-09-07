@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/matseee/templater/gui"
 	"github.com/matseee/templater/keylistener"
 	"github.com/matseee/templater/templater"
 	log "github.com/sirupsen/logrus"
@@ -18,13 +17,13 @@ func main() {
 }
 
 func createApplication() {
-	channel = templater.CreateChannel()
-	keylogger = keylistener.KeyloggerLinux{}
+	// channel = templater.CreateChannel()
+	// keylogger = keylistener.KeyloggerLinux{}
 
-	go keylistener.ListenToChannel(channel, &keylogger)
-	go gui.InitSystemtray(channel)
+	// go keylistener.ListenToChannel(channel, &keylogger)
+	// go gui.InitSystemtray(channel)
 
-	if err := gui.InitGUI(channel); err != nil {
-		log.Fatal(err)
-	}
+	// if err := gui.InitGUI(channel); err != nil {
+	// 	log.Fatal(err)
+	// }
 }
