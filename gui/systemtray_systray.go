@@ -11,6 +11,10 @@ type Systray struct {
 	tooltip   string
 	iconBytes []byte
 	menuItems []MenuItem
+
+	systrayChannels   []chan struct{}
+	callableMenuItems []MenuItem
+	systrayMenuItems  []*systray.MenuItem
 }
 
 func (s *Systray) SetTitle(title string) {
@@ -37,12 +41,63 @@ func (s *Systray) Run() {
 }
 
 func (s *Systray) onReady() {
+	s.createSystayIconTitleAndTooltip()
+	s.createMenuItems()
+
+	// for {
+	// 	reflect.Select(s.systrayChannels)
+	// }
+
+	s.status.IsRunning = true
+}
+
+func (s *Systray) createSystayIconTitleAndTooltip() {
+	systray.SetIcon(s.iconBytes)
+	systray.SetTitle(s.title)
+	systray.SetTooltip(s.tooltip)
+}
+
+func (s *Systray) createMenuItems() {
+	s.clearMenuItems()
+
+	for _, menuItem := range s.menuItems {
+		s.createMenuItem(menuItem)
+
+		if IsMenuItemClickable(menuItem) {
+			s.addClickableMenuItem(menuItem)
+		}
+	}
+}
+
+func (s *Systray) clearMenuItems() {
+	s.systrayChannels = make([]chan struct{}, 0)
+	s.callableMenuItems = make([]MenuItem, 0)
+	s.systrayMenuItems = make([]*systray.MenuItem, 0)
+}
+
+func (s *Systray) createMenuItem(menuItem MenuItem) {
+	switch menuItem.Type {
+	case MenuItemButton:
+		s.systrayMenuItems = append(s.systrayMenuItems, systray.AddMenuItem(menuItem.Title, menuItem.Tooltip))
+	case MenuItemCheckbox:
+		s.systrayMenuItems = append(s.systrayMenuItems, systray.AddMenuItemCheckbox(menuItem.Title, menuItem.Tooltip, false))
+	case MenuItemSeperator:
+		systray.AddSeparator()
+	}
+}
+
+func (s *Systray) addClickableMenuItem(menuItem MenuItem) {
+	s.systrayChannels = append(s.systrayChannels, s.systrayMenuItems[len(s.systrayMenuItems)-1].ClickedCh)
+	s.callableMenuItems = append(s.callableMenuItems, menuItem)
 }
 
 func (s *Systray) onExit() {
+	s.clearMenuItems()
+	s.status.IsRunning = false
 }
 
 func (s *Systray) Quit() {
+	systray.Quit()
 }
 
 // var (
@@ -65,9 +120,6 @@ func (s *Systray) Quit() {
 
 // 	menuItemOpen = systray.AddMenuItem("Open", "Open")
 // 	menuItemStatus = systray.AddMenuItemCheckbox("Active", "Check Me", false)
-// 	systray.AddSeparator()
-
-// 	menuItemGithub = systray.AddMenuItem("Homepage", "Visit homepage")
 // 	systray.AddSeparator()
 
 // 	menuItemQuit = systray.AddMenuItem("Quit", "Quit the whole app")

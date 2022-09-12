@@ -29,3 +29,7 @@ type MenuItem struct {
 	Checked bool
 	OnClick func(checked bool)
 }
+
+func IsMenuItemClickable(m MenuItem) bool {
+	return m.Type == MenuItemButton || m.Type == MenuItemCheckbox
+}

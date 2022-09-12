@@ -3,6 +3,7 @@ package gui
 import (
 	"bytes"
 	"reflect"
+	"strconv"
 	"testing"
 )
 
@@ -135,5 +136,35 @@ func Test_Systemtray_should_call_the_menuitem_callback_after_click(t *testing.T)
 
 	if !callbackTwoCalled {
 		t.Error("Systemtray should call the menuitem callback after item click but callbackTwo was not called")
+	}
+}
+
+func Test_IsMenuItemClickable_should_be_clickable_when_menuitem_is_type_MenuItemButton(t *testing.T) {
+	item := MenuItem{
+		Type: MenuItemButton,
+	}
+
+	if res := IsMenuItemClickable(item); !res {
+		t.Errorf("IsMenuItemClickable() should return 'true' when menuitem is type MenuItemButton, but its '%s'", strconv.FormatBool(res))
+	}
+}
+
+func Test_IsMenuItemClickable_should_be_clickable_when_menuitem_is_type_MenuItemCheckbox(t *testing.T) {
+	item := MenuItem{
+		Type: MenuItemCheckbox,
+	}
+
+	if res := IsMenuItemClickable(item); !res {
+		t.Errorf("IsMenuItemClickable() should return 'true' when menuitem is type MenuItemButton, but its '%s'", strconv.FormatBool(res))
+	}
+}
+
+func Test_IsMenuItemClickable_should_be_clickable_when_menuitem_is_type_MenuItemSeperator(t *testing.T) {
+	item := MenuItem{
+		Type: MenuItemSeperator,
+	}
+
+	if res := IsMenuItemClickable(item); res {
+		t.Errorf("IsMenuItemClickable() should return 'false' when menuitem is type MenuItemSeperator, but its '%s'", strconv.FormatBool(res))
 	}
 }

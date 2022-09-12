@@ -47,7 +47,7 @@ func (g *Gui) createMenuItems() []MenuItem {
 		{
 			Type:    MenuItemCheckbox,
 			Title:   "Active",
-			Tooltip: "Click me",
+			Tooltip: "Activate templater",
 			Checked: false,
 			OnClick: func(checked bool) {
 				g.eventChannel.Send(templater.CreateStatusEvent(checked))
@@ -59,7 +59,7 @@ func (g *Gui) createMenuItems() []MenuItem {
 		{
 			Type:    MenuItemButton,
 			Title:   "Quit",
-			Tooltip: "Quit",
+			Tooltip: "Quit the application",
 			OnClick: func(checked bool) {
 				g.eventChannel.Send(templater.CreateQuitEvent())
 			},
