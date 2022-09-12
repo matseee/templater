@@ -25,9 +25,27 @@ func CreateEvent() Event {
 	}
 }
 
+func CreateStatusEvent(active bool) Event {
+	ev := CreateEvent()
+	ev.ValueBool = active
+	return ev
+}
+
+func CreateOpenSettingsEvent() Event {
+	ev := CreateEvent()
+	ev.Type = OpenSettingsEvent
+	return ev
+}
+
 func CreateKeylistenerEvent(key string) Event {
 	event := CreateEvent()
 	event.Type = KeylistenerEvent
 	event.ValueString = key
 	return event
+}
+
+func CreateQuitEvent() Event {
+	ev := CreateEvent()
+	ev.Type = QuitEvent
+	return ev
 }
