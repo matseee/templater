@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"github.com/getlantern/systray/example/icon"
 	"github.com/matseee/templater/templater"
 )
 
@@ -19,10 +20,51 @@ type Gui struct {
 
 func (g *Gui) SetSystemtray(systemtray Systemtray) {
 	g.systemtray = systemtray
+	g.setupSystemtray()
 }
 
 func (g *Gui) SetApi(api Api) {
 	g.api = api
+}
+
+func (g *Gui) setupSystemtray() {
+	g.systemtray.SetTitle("Templater")
+	g.systemtray.SetTooltip("Templater")
+	g.systemtray.SetIcon(icon.Data)
+	g.systemtray.SetMenuItems(g.createMenuItems())
+}
+
+func (g *Gui) createMenuItems() []MenuItem {
+	return []MenuItem{
+		{
+			Type:    MenuItemButton,
+			Title:   "Open",
+			Tooltip: "Open settings",
+			OnClick: func(checked bool) {
+				g.eventChannel.Send(templater.CreateOpenSettingsEvent())
+			},
+		},
+		{
+			Type:    MenuItemCheckbox,
+			Title:   "Active",
+			Tooltip: "Click me",
+			Checked: false,
+			OnClick: func(checked bool) {
+				g.eventChannel.Send(templater.CreateStatusEvent(checked))
+			},
+		},
+		{
+			Type: MenuItemSeperator,
+		},
+		{
+			Type:    MenuItemButton,
+			Title:   "Quit",
+			Tooltip: "Quit",
+			OnClick: func(checked bool) {
+				g.eventChannel.Send(templater.CreateQuitEvent())
+			},
+		},
+	}
 }
 
 // const (
