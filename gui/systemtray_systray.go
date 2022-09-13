@@ -4,6 +4,11 @@ import (
 	"github.com/getlantern/systray"
 )
 
+type ClickableMenuItem struct {
+	systrayMenuItem *systray.MenuItem
+	menuItem        MenuItem
+}
+
 type Systray struct {
 	status SystemtrayStatus
 
@@ -12,9 +17,8 @@ type Systray struct {
 	iconBytes []byte
 	menuItems []MenuItem
 
-	systrayChannels   []chan struct{}
-	callableMenuItems []MenuItem
-	systrayMenuItems  []*systray.MenuItem
+	clickableMenuItems []ClickableMenuItem
+	systrayMenuItems   []*systray.MenuItem
 }
 
 func (s *Systray) SetTitle(title string) {
@@ -43,12 +47,27 @@ func (s *Systray) Run() {
 func (s *Systray) onReady() {
 	s.createSystayIconTitleAndTooltip()
 	s.createMenuItems()
-
-	// for {
-	// 	reflect.Select(s.systrayChannels)
-	// }
+	go s.listenToMenuItemClicks()
 
 	s.status.IsRunning = true
+}
+
+func (s *Systray) listenToMenuItemClicks() {
+	menuItemClickedChannel := make(chan *ClickableMenuItem)
+
+	for _, clickableMenuItem := range s.clickableMenuItems {
+		go func(c chan struct{}, _clickableMenuItem *ClickableMenuItem) {
+			for range c {
+				menuItemClickedChannel <- _clickableMenuItem
+			}
+		}(clickableMenuItem.systrayMenuItem.ClickedCh, &clickableMenuItem)
+	}
+
+	for clickedMenuItem := range menuItemClickedChannel {
+		clickedMenuItem.menuItem.OnClick(
+			!clickedMenuItem.systrayMenuItem.Checked(),
+		)
+	}
 }
 
 func (s *Systray) createSystayIconTitleAndTooltip() {
@@ -70,8 +89,7 @@ func (s *Systray) createMenuItems() {
 }
 
 func (s *Systray) clearMenuItems() {
-	s.systrayChannels = make([]chan struct{}, 0)
-	s.callableMenuItems = make([]MenuItem, 0)
+	s.clickableMenuItems = make([]ClickableMenuItem, 0)
 	s.systrayMenuItems = make([]*systray.MenuItem, 0)
 }
 
@@ -87,8 +105,11 @@ func (s *Systray) createMenuItem(menuItem MenuItem) {
 }
 
 func (s *Systray) addClickableMenuItem(menuItem MenuItem) {
-	s.systrayChannels = append(s.systrayChannels, s.systrayMenuItems[len(s.systrayMenuItems)-1].ClickedCh)
-	s.callableMenuItems = append(s.callableMenuItems, menuItem)
+	callableMenuItem := ClickableMenuItem{
+		systrayMenuItem: s.systrayMenuItems[len(s.systrayMenuItems)-1],
+		menuItem:        menuItem,
+	}
+	s.clickableMenuItems = append(s.clickableMenuItems, callableMenuItem)
 }
 
 func (s *Systray) onExit() {
