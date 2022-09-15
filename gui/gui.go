@@ -13,18 +13,12 @@ func CreateGui(eventChannel templater.EventChannel) Gui {
 
 type Gui struct {
 	eventChannel templater.EventChannel
-
-	systemtray Systemtray
-	api        Api
+	systemtray   Systemtray
 }
 
 func (g *Gui) SetSystemtray(systemtray Systemtray) {
 	g.systemtray = systemtray
 	g.setupSystemtray()
-}
-
-func (g *Gui) SetApi(api Api) {
-	g.api = api
 }
 
 func (g *Gui) setupSystemtray() {
