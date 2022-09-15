@@ -16,6 +16,8 @@ type Api interface {
 	Quit()
 }
 
+type ApiCallbacks struct{}
+
 func getRandomPort() int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(API_PORTMAX-API_PORTMIN) + API_PORTMIN

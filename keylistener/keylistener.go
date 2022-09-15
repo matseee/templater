@@ -6,6 +6,11 @@ import (
 	"github.com/matseee/templater/communication"
 )
 
+type KeylistenerStatus struct {
+	IsActive        bool
+	KeyEventCounter uint64
+}
+
 func CreateKeylistener(eventChannel communication.EventChannel, keylogger Keylogger) (Keylistener, error) {
 	k := Keylistener{
 		eventChannel,
@@ -74,9 +79,4 @@ func (k *Keylistener) increaseKeyEventCounter() {
 func (k *Keylistener) sendKeylistenerEventToEventChannel(key string) {
 	event := communication.CreateKeylistenerEvent(key)
 	k.eventChannel.Send(event)
-}
-
-type KeylistenerStatus struct {
-	IsActive        bool
-	KeyEventCounter uint64
 }

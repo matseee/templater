@@ -5,15 +5,6 @@ import (
 	"testing"
 )
 
-type ApiMock struct {
-}
-
-func (a *ApiMock) Run() {
-}
-
-func (a *ApiMock) Quit() {
-}
-
 func Test_getRandomPort_should_return_a_port_between_49152_and_65535(t *testing.T) {
 	randomPort := getRandomPort()
 

@@ -6,14 +6,15 @@ import (
 	"github.com/matseee/templater/communication"
 )
 
-func createGui() (Gui, communication.EventChannel) {
+func createGui() (Gui, communication.EventChannel, *SystemtrayMock) {
 	ec := communication.CreateEventChannel()
-	gui := CreateGui(ec)
-	return gui, ec
+	st := new(SystemtrayMock)
+	gui := CreateGui(ec, st)
+	return gui, ec, st
 }
 
 func Test_CreateGui_should_return_an_valid_GUI_object(t *testing.T) {
-	gui, ec := createGui()
+	gui, ec, _ := createGui()
 	var inter interface{} = gui
 
 	if _, ok := inter.(Gui); !ok {
@@ -26,11 +27,9 @@ func Test_CreateGui_should_return_an_valid_GUI_object(t *testing.T) {
 }
 
 func Test_GuiSetSystemtray_should_set_the_given_systemtray_object(t *testing.T) {
-	gui, _ := createGui()
-	st := new(SystemtrayMock)
-	var inter interface{} = st
+	gui, _, st := createGui()
 
-	gui.SetSystemtray(st)
+	var inter interface{} = st
 
 	if gui.systemtray != inter {
 		t.Errorf("Gui.SetSystemtray() should set the given systemtray object but got nil or another object")
@@ -38,10 +37,7 @@ func Test_GuiSetSystemtray_should_set_the_given_systemtray_object(t *testing.T) 
 }
 
 func Test_Gui_setupSystemtray_should_setup_the_systemtray_object(t *testing.T) {
-	gui, _ := createGui()
-	st := new(SystemtrayMock)
-
-	gui.SetSystemtray(st)
+	_, _, st := createGui()
 
 	if len(st.menuItems) == 0 {
 		t.Errorf("Gui.setupSystemtray() should create the menuitems, but none is available")
@@ -65,5 +61,26 @@ func Test_Gui_setupSystemtray_should_setup_the_systemtray_object(t *testing.T) {
 
 	if st.tooltip != "Templater" {
 		t.Errorf("Gui.setupSystemtray() should set the tooltip to 'Templater', but got '%s'", st.title)
+	}
+}
+
+func Test_Gui_Run_should_start_the_systemtray_object(t *testing.T) {
+	g, _, st := createGui()
+
+	g.Run()
+
+	if !st.status.IsRunning {
+		t.Error("Gui.Run() should start the systemtray, but systemtray.status.IsRunning is false")
+	}
+}
+
+func Test_Gui_Quit_should_stop_the_systemtray_object(t *testing.T) {
+	g, _, st := createGui()
+
+	g.Run()
+	g.Quit()
+
+	if st.status.IsRunning {
+		t.Error("Gui.Quit() should stop the systemtray, but systemtray.status.IsRunning is true")
 	}
 }

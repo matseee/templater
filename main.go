@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/matseee/templater/communication"
-	"github.com/matseee/templater/gui"
 	"github.com/matseee/templater/keylistener"
 )
 
@@ -22,8 +21,8 @@ func createKeylistener(ch communication.EventChannel) keylistener.Keylistener {
 	return kl
 }
 
-func createGui(ch communication.EventChannel) gui.Gui {
-	g := gui.CreateGui(ch)
-	g.SetSystemtray(&gui.Systray{})
-	return g
-}
+// func createGui(ch communication.EventChannel) gui.Gui {
+// 	g := gui.CreateGui(ch)
+// 	g.SetSystemtray(&gui.Systray{})
+// 	return g
+// }

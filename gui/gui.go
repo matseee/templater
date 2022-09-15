@@ -5,10 +5,12 @@ import (
 	"github.com/matseee/templater/communication"
 )
 
-func CreateGui(eventChannel communication.EventChannel) Gui {
-	gui := *new(Gui)
-	gui.eventChannel = eventChannel
-	return gui
+func CreateGui(eventChannel communication.EventChannel, systemtray Systemtray) Gui {
+	g := *new(Gui)
+	g.eventChannel = eventChannel
+	g.systemtray = systemtray
+	g.setupSystemtray()
+	return g
 }
 
 type Gui struct {
@@ -16,9 +18,12 @@ type Gui struct {
 	systemtray   Systemtray
 }
 
-func (g *Gui) SetSystemtray(systemtray Systemtray) {
-	g.systemtray = systemtray
-	g.setupSystemtray()
+func (g *Gui) Run() {
+	g.systemtray.Run()
+}
+
+func (g *Gui) Quit() {
+	g.systemtray.Quit()
 }
 
 func (g *Gui) setupSystemtray() {
