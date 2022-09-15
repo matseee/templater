@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/matseee/templater/templater"
+	"github.com/matseee/templater/communication"
 )
 
 type KeyloggerMock struct {
@@ -57,17 +57,17 @@ func createKeyloggerMock() KeyloggerMock {
 	}
 }
 
-func createChannelAndKeyloggerMock() (templater.EventChannel, KeyloggerMock) {
-	return templater.CreateEventChannel(), createKeyloggerMock()
+func createChannelAndKeyloggerMock() (communication.EventChannel, KeyloggerMock) {
+	return communication.CreateEventChannel(), createKeyloggerMock()
 }
 
-func createChannelAndKeyloggerMockAndKeylistener() (templater.EventChannel, KeyloggerMock, Keylistener) {
+func createChannelAndKeyloggerMockAndKeylistener() (communication.EventChannel, KeyloggerMock, Keylistener) {
 	eventChannel, keylogger := createChannelAndKeyloggerMock()
 	keylistener, _ := CreateKeylistener(eventChannel, &keylogger)
 	return eventChannel, keylogger, keylistener
 }
 
-func createChannelAndKeyloggerAndActivatedKeylistener() (templater.EventChannel, KeyloggerMock, Keylistener) {
+func createChannelAndKeyloggerAndActivatedKeylistener() (communication.EventChannel, KeyloggerMock, Keylistener) {
 	eventChannel, keylogger, keylistener := createChannelAndKeyloggerMockAndKeylistener()
 	keylistener.Activate()
 	return eventChannel, keylogger, keylistener
@@ -119,7 +119,7 @@ func Test_Keylistener_should_send_an_event_to_eventchannel_after_keylogger_keyev
 
 	go func() {
 		for event := range eventChannel.Channel {
-			if event.Type == templater.KeylistenerEvent && event.ValueString == RESULT_KEY {
+			if event.Type == communication.KeylistenerEvent && event.ValueString == RESULT_KEY {
 				gotKeyEvent = true
 			}
 		}

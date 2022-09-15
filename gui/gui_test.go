@@ -3,11 +3,11 @@ package gui
 import (
 	"testing"
 
-	"github.com/matseee/templater/templater"
+	"github.com/matseee/templater/communication"
 )
 
-func createGui() (Gui, templater.EventChannel) {
-	ec := templater.CreateEventChannel()
+func createGui() (Gui, communication.EventChannel) {
+	ec := communication.CreateEventChannel()
 	gui := CreateGui(ec)
 	return gui, ec
 }

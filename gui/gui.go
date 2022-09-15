@@ -2,17 +2,17 @@ package gui
 
 import (
 	"github.com/getlantern/systray/example/icon"
-	"github.com/matseee/templater/templater"
+	"github.com/matseee/templater/communication"
 )
 
-func CreateGui(eventChannel templater.EventChannel) Gui {
+func CreateGui(eventChannel communication.EventChannel) Gui {
 	gui := *new(Gui)
 	gui.eventChannel = eventChannel
 	return gui
 }
 
 type Gui struct {
-	eventChannel templater.EventChannel
+	eventChannel communication.EventChannel
 	systemtray   Systemtray
 }
 
@@ -35,7 +35,7 @@ func (g *Gui) createMenuItems() []MenuItem {
 			Title:   "Open",
 			Tooltip: "Open settings",
 			OnClick: func(checked bool) {
-				g.eventChannel.Send(templater.CreateOpenSettingsEvent())
+				g.eventChannel.Send(communication.CreateOpenSettingsEvent())
 			},
 		},
 		{
@@ -44,7 +44,7 @@ func (g *Gui) createMenuItems() []MenuItem {
 			Tooltip: "Activate templater",
 			Checked: false,
 			OnClick: func(checked bool) {
-				g.eventChannel.Send(templater.CreateStatusEvent(checked))
+				g.eventChannel.Send(communication.CreateStatusEvent(checked))
 			},
 		},
 		{
@@ -55,7 +55,7 @@ func (g *Gui) createMenuItems() []MenuItem {
 			Title:   "Quit",
 			Tooltip: "Quit the application",
 			OnClick: func(checked bool) {
-				g.eventChannel.Send(templater.CreateQuitEvent())
+				g.eventChannel.Send(communication.CreateQuitEvent())
 			},
 		},
 	}

@@ -3,10 +3,10 @@ package keylistener
 import (
 	"fmt"
 
-	"github.com/matseee/templater/templater"
+	"github.com/matseee/templater/communication"
 )
 
-func CreateKeylistener(eventChannel templater.EventChannel, keylogger Keylogger) (Keylistener, error) {
+func CreateKeylistener(eventChannel communication.EventChannel, keylogger Keylogger) (Keylistener, error) {
 	k := Keylistener{
 		eventChannel,
 		keylogger,
@@ -17,7 +17,7 @@ func CreateKeylistener(eventChannel templater.EventChannel, keylogger Keylogger)
 }
 
 type Keylistener struct {
-	eventChannel templater.EventChannel
+	eventChannel communication.EventChannel
 	keylogger    Keylogger
 	status       *KeylistenerStatus
 }
@@ -72,7 +72,7 @@ func (k *Keylistener) increaseKeyEventCounter() {
 }
 
 func (k *Keylistener) sendKeylistenerEventToEventChannel(key string) {
-	event := templater.CreateKeylistenerEvent(key)
+	event := communication.CreateKeylistenerEvent(key)
 	k.eventChannel.Send(event)
 }
 

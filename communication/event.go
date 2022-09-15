@@ -1,4 +1,4 @@
-package templater
+package communication
 
 type EventStatus int64
 

@@ -1,29 +1,29 @@
 package main
 
 import (
+	"github.com/matseee/templater/communication"
+	"github.com/matseee/templater/gui"
 	"github.com/matseee/templater/keylistener"
-	"github.com/matseee/templater/templater"
-	log "github.com/sirupsen/logrus"
-)
-
-var (
-	channel   chan templater.Event
-	keylogger keylistener.KeyloggerLinux
 )
 
 func main() {
-	log.SetLevel(log.DebugLevel)
-	createApplication()
+	// ch := createEventChannel()
+	// kl := createKeylistener(ch)
+
+	// g := createGui(ch)
 }
 
-func createApplication() {
-	// channel = templater.CreateChannel()
-	// keylogger = keylistener.KeyloggerLinux{}
+func createEventChannel() communication.EventChannel {
+	return communication.CreateEventChannel()
+}
 
-	// go keylistener.ListenToChannel(channel, &keylogger)
-	// go gui.InitSystemtray(channel)
+func createKeylistener(ch communication.EventChannel) keylistener.Keylistener {
+	kl, _ := keylistener.CreateKeylistener(ch, &keylistener.KeyloggerLinux{})
+	return kl
+}
 
-	// if err := gui.InitGUI(channel); err != nil {
-	// 	log.Fatal(err)
-	// }
+func createGui(ch communication.EventChannel) gui.Gui {
+	g := gui.CreateGui(ch)
+	g.SetSystemtray(&gui.Systray{})
+	return g
 }

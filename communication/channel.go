@@ -1,4 +1,4 @@
-package templater
+package communication
 
 import "errors"
 
