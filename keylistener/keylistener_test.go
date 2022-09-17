@@ -67,8 +67,8 @@ func Test_Keylistener_should_send_an_event_to_eventchannel_after_keylogger_keyev
 	eventChannel, keylogger, _ := createChannelAndKeyloggerAndActivatedKeylistener()
 
 	go func() {
-		for event := range eventChannel.Channel {
-			if event.Type == communication.KeylistenerEvent && event.ValueString == RESULT_KEY {
+		for e := range eventChannel.Channel {
+			if e.IsType(communication.KeyPressed) && e.(communication.KeyPressedEvent).Key == RESULT_KEY {
 				gotKeyEvent = true
 			}
 		}

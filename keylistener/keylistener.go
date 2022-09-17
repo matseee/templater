@@ -77,6 +77,5 @@ func (k *Keylistener) increaseKeyEventCounter() {
 }
 
 func (k *Keylistener) sendKeylistenerEventToEventChannel(key string) {
-	event := communication.CreateKeylistenerEvent(key)
-	k.eventChannel.Send(event)
+	k.eventChannel.Send(communication.KeyPressedEvent{Key: key})
 }

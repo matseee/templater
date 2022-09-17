@@ -2,38 +2,82 @@ package communication
 
 import "testing"
 
-func Test_CreateEvent_should_return_a_empty_event_of_type_StatusEvent(t *testing.T) {
-	event := CreateEvent()
+func Test_ToggleActiveEvent_IsType_should_validate(t *testing.T) {
+	e := new(ToggleActiveEvent)
 
-	if event.Type != StatusEvent || event.ValueBool != false || event.ValueInt != 0 || event.ValueString != "" {
-		t.Error("CreateEvent() should create an empty event")
+	if !e.IsType(ToggleActive) {
+		t.Error("ToggleActiveEvent.IsType(ToggleActive) should return true but got false")
+	}
+
+	if e.IsType(OpenWindow) {
+		t.Error("ToggleActiveEvent.IsType(OpenWindow) should return false but got true")
+	}
+
+	if e.IsType(KeyPressed) {
+		t.Error("ToggleActiveEvent.IsType(KeyPressed) should return false but got true")
+	}
+
+	if e.IsType(Quit) {
+		t.Error("ToggleActiveEvent.IsType(Quit) should return false but got true")
 	}
 }
 
-func Test_CreateStatusEvent_should_return_an_event_with_type_StatusEvent(t *testing.T) {
-	ev := CreateStatusEvent(true)
+func Test_OpenWindowEvent_IsType_should_validate(t *testing.T) {
+	e := new(OpenWindowEvent)
 
-	if ev.Type != StatusEvent {
-		t.Error("CreateStatusEvent(true) should create a StatusEvent")
+	if !e.IsType(OpenWindow) {
+		t.Error("OpenWindowEvent.IsType(OpenWindow) should return true but got false")
 	}
 
-	if !ev.ValueBool {
-		t.Error("CreateStatusEvent(true) should create a StatusEvent with ValueBool == true")
+	if e.IsType(ToggleActive) {
+		t.Error("OpenWindowEvent.IsType(ToggleActive) should return false but got true")
+	}
+
+	if e.IsType(KeyPressed) {
+		t.Error("OpenWindowEvent.IsType(KeyPressed) should return false but got true")
+	}
+
+	if e.IsType(Quit) {
+		t.Error("OpenWindowEvent.IsType(Quit) should return false but got true")
 	}
 }
 
-func Test_CreateOpenSettingsEvent_should_return_an_event_with_type_OpenSettingsEvent(t *testing.T) {
-	ev := CreateOpenSettingsEvent()
+func Test_KeyPressedEvent_IsType_should_validate(t *testing.T) {
+	e := new(KeyPressedEvent)
 
-	if ev.Type != OpenSettingsEvent {
-		t.Error("CreateOpenSettingsEvent() should create an OpenSettingsEvent")
+	if !e.IsType(KeyPressed) {
+		t.Error("KeyPressedEvent.IsType(KeyPressed) should return true but got false")
+	}
+
+	if e.IsType(ToggleActive) {
+		t.Error("KeyPressedEvent.IsType(ToggleActive) should return false but got true")
+	}
+
+	if e.IsType(OpenWindow) {
+		t.Error("KeyPressedEvent.IsType(OpenWindow) should return false but got true")
+	}
+
+	if e.IsType(Quit) {
+		t.Error("KeyPressedEvent.IsType(Quit) should return false but got true")
 	}
 }
 
-func Test_CreateQuitEvent_should_return_an_event_with_type_QuitEvent(t *testing.T) {
-	ev := CreateQuitEvent()
+func Test_QuitEvent_IsType_should_validate(t *testing.T) {
+	e := new(QuitEvent)
 
-	if ev.Type != QuitEvent {
-		t.Error("CreateQuitEvent() should create a QuitEvent")
+	if !e.IsType(Quit) {
+		t.Error("QuitEvent.IsType(Quit) should return true but got false")
+	}
+
+	if e.IsType(ToggleActive) {
+		t.Error("QuitEvent.IsType(ToggleActive) should return false but got true")
+	}
+
+	if e.IsType(OpenWindow) {
+		t.Error("QuitEvent.IsType(OpenWindow) should return false but got true")
+	}
+
+	if e.IsType(KeyPressed) {
+		t.Error("QuitEvent.IsType(KeyPressed) should return false but got true")
 	}
 }

@@ -15,7 +15,7 @@ func Test_CreateEventChannel_should_create_a_EventChannel_object_with_Channel(t 
 
 func Test_EventChannelSend_should_return_an_error_when_channel_is_nil(t *testing.T) {
 	eventChannel := EventChannel{}
-	event := CreateEvent()
+	event := new(ToggleActiveEvent)
 
 	err := eventChannel.Send(event)
 
@@ -26,7 +26,7 @@ func Test_EventChannelSend_should_return_an_error_when_channel_is_nil(t *testing
 
 func Test_EventChannelSend_should_send_a_event_over_the_channel(t *testing.T) {
 	var receivedMessage = false
-	event := CreateEvent()
+	event := new(ToggleActiveEvent)
 
 	eventChannel := CreateEventChannel()
 

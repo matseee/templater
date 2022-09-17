@@ -1,51 +1,42 @@
 package communication
 
-type EventStatus int64
+type EventType int64
 
 const (
-	StatusEvent EventStatus = iota
-	KeylistenerEvent
-	OpenSettingsEvent
-	QuitEvent
+	ToggleActive = iota
+	OpenWindow
+	KeyPressed
+	Quit
 )
 
-type Event struct {
-	Type        EventStatus
-	ValueBool   bool
-	ValueInt    int64
-	ValueString string
+type Event interface {
+	IsType(EventType) bool
 }
 
-func CreateEvent() Event {
-	return Event{
-		Type:        StatusEvent,
-		ValueBool:   false,
-		ValueInt:    0,
-		ValueString: "",
-	}
+type ToggleActiveEvent struct {
+	IsActive bool
 }
 
-func CreateStatusEvent(active bool) Event {
-	ev := CreateEvent()
-	ev.ValueBool = active
-	return ev
+func (c ToggleActiveEvent) IsType(t EventType) bool {
+	return t == ToggleActive
 }
 
-func CreateOpenSettingsEvent() Event {
-	ev := CreateEvent()
-	ev.Type = OpenSettingsEvent
-	return ev
+type OpenWindowEvent struct{}
+
+func (c OpenWindowEvent) IsType(t EventType) bool {
+	return t == OpenWindow
 }
 
-func CreateKeylistenerEvent(key string) Event {
-	event := CreateEvent()
-	event.Type = KeylistenerEvent
-	event.ValueString = key
-	return event
+type KeyPressedEvent struct {
+	Key string
 }
 
-func CreateQuitEvent() Event {
-	ev := CreateEvent()
-	ev.Type = QuitEvent
-	return ev
+func (c KeyPressedEvent) IsType(t EventType) bool {
+	return t == KeyPressed
+}
+
+type QuitEvent struct{}
+
+func (c QuitEvent) IsType(t EventType) bool {
+	return t == Quit
 }

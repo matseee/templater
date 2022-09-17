@@ -40,7 +40,7 @@ func (g *Gui) createMenuItems() []MenuItem {
 			Title:   "Open",
 			Tooltip: "Open settings",
 			OnClick: func(checked bool) {
-				g.eventChannel.Send(communication.CreateOpenSettingsEvent())
+				g.eventChannel.Send(communication.OpenWindowEvent{})
 			},
 		},
 		{
@@ -49,7 +49,7 @@ func (g *Gui) createMenuItems() []MenuItem {
 			Tooltip: "Activate templater",
 			Checked: false,
 			OnClick: func(checked bool) {
-				g.eventChannel.Send(communication.CreateStatusEvent(checked))
+				g.eventChannel.Send(communication.ToggleActiveEvent{IsActive: checked})
 			},
 		},
 		{
@@ -60,7 +60,7 @@ func (g *Gui) createMenuItems() []MenuItem {
 			Title:   "Quit",
 			Tooltip: "Quit the application",
 			OnClick: func(checked bool) {
-				g.eventChannel.Send(communication.CreateQuitEvent())
+				g.eventChannel.Send(communication.QuitEvent{})
 			},
 		},
 	}
